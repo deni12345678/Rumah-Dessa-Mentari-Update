@@ -1,0 +1,341 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==============================================================
+    // 1. FUNGSI PEMBANTU OTENTIKASI & OTORISASI (HELPER FUNCTIONS)
+    // ==============================================================
+
+    // Memeriksa apakah pengguna telah masuk (terotentikasi)
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Administrator Utama DML:
+    // Wajib login dengan email santosodeni3@gmail.com ATAU denisarah26@gmail.com (atau role admin terverifikasi di database)
+    function isAdmin() {
+      return isSignedIn() &&
+             (
+               (request.auth.token.email != null &&
+                (request.auth.token.email.lower() == 'santosodeni3@gmail.com' || request.auth.token.email.lower() == 'denisarah26@gmail.com') &&
+                request.auth.token.email_verified == true) ||
+               (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' &&
+                get(/databases/$(database)/documents/users/$(request.auth.uid)).data.approvalStatus == 'approved')
+             );
+    }
+
+    // Editor Meja Redaksi DML:
+    // Terotentikasi, memiliki dokumen profil pada koleksi users, role 'editor' / 'admin', dan status 'approved'
+    function isEditor() {
+      return isSignedIn() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['editor', 'admin'] &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.approvalStatus == 'approved';
+    }
+
+    // Hak akses staf kurasi (Admin ATAU Editor)
+    function isEditorOrAdmin() {
+      return isAdmin() || isEditor();
+    }
+
+    // Validasi skema dan struktur dokumen artikel (Wajib dipatuhi baik oleh Penulis maupun Admin)
+    function isValidArticleDoc(data, artId) {
+      return data.id == artId &&
+             data.title is string && data.title.size() >= 5 && data.title.size() <= 200 &&
+             data.content is string && data.content.size() >= 50 && data.content.size() <= 200000 &&
+             data.authorId is string && data.authorId.size() >= 3 && data.authorId.size() <= 128 &&
+             data.authorName is string && data.authorName.size() >= 2 && data.authorName.size() <= 100 &&
+             data.createdAt is string && data.createdAt.size() >= 10 && data.createdAt.size() <= 40 &&
+             data.keys().hasOnly([
+               'id', 'slug', 'title', 'summary', 'content', 'category', 'tags',
+               'authorId', 'authorName', 'authorBio', 'authorAvatar', 'coverImage',
+               'imageAttribution', 'readingTime', 'status', 'sources', 'submittedAt',
+               'reviewedAt', 'publishedAt', 'revisionNotes', 'views', 'createdAt', 'updatedAt', 'featured'
+             ]);
+    }
+
+    // ==============================================================
+    // 2. KOLEKSI PENGGUNA (users)
+    // ==============================================================
+    match /users/{userId} {
+      // Pengguna hanya dapat membaca profilnya sendiri, kecuali Editor dan Admin
+      allow get: if isSignedIn() && (request.auth.uid == userId || isEditorOrAdmin());
+      // Hanya staf berwenang yang dapat melihat daftar seluruh pengguna
+      allow list: if isEditorOrAdmin();
+
+      // Pendaftaran Pengguna Baru:
+      // Mencegah email spoofing dengan memverifikasi kesesuaian email token Auth
+      allow create: if isSignedIn() &&
+        request.auth.uid == userId &&
+        request.resource.data.id == userId &&
+        request.resource.data.email is string &&
+        (
+          request.auth.token.email == null ||
+          request.resource.data.email.lower() == request.auth.token.email.lower()
+        ) &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 100 &&
+        request.resource.data.createdAt is string &&
+        request.resource.data.createdAt.size() >= 10 && request.resource.data.createdAt.size() <= 40 &&
+        (
+          // Jalur Admin Utama (santosodeni3@gmail.com / denisarah26@gmail.com atau role admin)
+          (
+            isAdmin() &&
+            request.resource.data.role == 'admin' &&
+            request.resource.data.approvalStatus == 'approved'
+          ) ||
+          // Jalur Pengguna Biasa / Kontributor Baru (Wajib role contributor dan status pending)
+          (
+            !isAdmin() &&
+            request.resource.data.role == 'contributor' &&
+            request.resource.data.approvalStatus == 'pending'
+          )
+        ) &&
+        request.resource.data.keys().hasOnly([
+          'id', 'name', 'email', 'role', 'approvalStatus', 'bio',
+          'phone', 'portfolioUrl', 'preferredCategories', 'avatarUrl', 'createdAt'
+        ]);
+
+      // Pembaruan Profil Pengguna:
+      // 1. Pengguna biasa HANYA boleh memperbarui biodata & kontak miliknya.
+      //    Dilarang keras mengubah role, approvalStatus, email, id, atau createdAt.
+      // 2. Hanya Administrator terverifikasi yang berhak mengubah role atau approvalStatus pengguna lain.
+      allow update: if (
+        // Jalur Pemilik Akun Mandiri
+        isSignedIn() &&
+        request.auth.uid == userId &&
+        request.resource.data.id == resource.data.id &&
+        request.resource.data.email == resource.data.email &&
+        request.resource.data.role == resource.data.role &&
+        request.resource.data.approvalStatus == resource.data.approvalStatus &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'name', 'bio', 'phone', 'portfolioUrl', 'preferredCategories', 'avatarUrl'
+        ])
+      ) || (
+        // Jalur Administrator Utama Terverifikasi
+        isAdmin() &&
+        request.resource.data.id == resource.data.id &&
+        request.resource.data.email == resource.data.email &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        request.resource.data.role in ['reader', 'contributor', 'editor', 'admin'] &&
+        request.resource.data.approvalStatus in ['pending', 'approved', 'rejected'] &&
+        request.resource.data.keys().hasOnly([
+          'id', 'name', 'email', 'role', 'approvalStatus', 'bio',
+          'phone', 'portfolioUrl', 'preferredCategories', 'avatarUrl', 'createdAt'
+        ])
+      );
+
+      // Penghapusan akun pengguna HANYA boleh dilakukan oleh Administrator Utama
+      allow delete: if isAdmin();
+    }
+
+    // ==============================================================
+    // 3. KOLEKSI ARTIKEL & NASKAH (articles)
+    // ==============================================================
+    match /articles/{articleId} {
+      // Pembacaan artikel: Publik hanya artikel berstatus 'published'.
+      // Penulis dapat membaca naskah miliknya, sedangkan Editor/Admin dapat membaca seluruh naskah.
+      allow get: if resource.data.status == 'published' ||
+                    (isSignedIn() && (resource.data.authorId == request.auth.uid || isEditorOrAdmin()));
+
+      allow list: if resource.data.status == 'published' ||
+                     (isSignedIn() && (resource.data.authorId == request.auth.uid || isEditorOrAdmin()));
+
+      // Pembuatan naskah artikel baru:
+      // Struktur dokumen wajib lolos isValidArticleDoc() untuk SEMUA pembuat (tidak ada bypass).
+      allow create: if isValidArticleDoc(request.resource.data, articleId) && (
+        // Jalur Penulis: Kepemilikan authorId valid dan status awal hanya draft atau submitted
+        (
+          isSignedIn() &&
+          request.resource.data.authorId == request.auth.uid &&
+          request.resource.data.status in ['draft', 'submitted']
+        ) ||
+        // Jalur Administrator: Admin dapat membuat artikel dengan status draft, submitted, atau published
+        (
+          isAdmin() &&
+          request.resource.data.status in ['draft', 'submitted', 'published']
+        )
+      );
+
+      // Pembaruan naskah artikel:
+      // Struktur dokumen hasil update wajib tetap valid sesuai isValidArticleDoc().
+      allow update: if isValidArticleDoc(request.resource.data, articleId) && (
+        // 1. Jalur Penulis (Author update):
+        //    Hanya naskah miliknya yang BELUM terbit (draft/submitted/revision_requested/rejected).
+        //    Status hanya boleh beralih ke draft atau submitted (dilarang self-publish).
+        //    Dilarang mengubah authorId, authorName, authorBio, authorAvatar, id, createdAt, atau views.
+        (
+          isSignedIn() &&
+          resource.data.authorId == request.auth.uid &&
+          request.resource.data.authorId == resource.data.authorId &&
+          request.resource.data.authorName == resource.data.authorName &&
+          request.resource.data.authorBio == resource.data.authorBio &&
+          request.resource.data.authorAvatar == resource.data.authorAvatar &&
+          request.resource.data.id == resource.data.id &&
+          request.resource.data.createdAt == resource.data.createdAt &&
+          request.resource.data.views == resource.data.views &&
+          resource.data.status in ['draft', 'submitted', 'revision_requested', 'rejected'] &&
+          request.resource.data.status in ['draft', 'submitted'] &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'title', 'summary', 'content', 'category', 'tags', 'coverImage',
+            'imageAttribution', 'readingTime', 'sources', 'status', 'submittedAt',
+            'updatedAt', 'slug', 'revisionNotes', 'reviewedAt'
+          ])
+        ) ||
+        // 2. Jalur Editor Meja Redaksi (Curator update terbatas):
+        //    Hanya boleh mengubah field kurasi editorial yang diizinkan.
+        //    Wajib status kurasi yang sah (under_review, revision_requested, rejected, published).
+        //    Dilarang keras mengubah authorId, authorName, authorBio, authorAvatar, id, createdAt, atau views.
+        (
+          isEditor() &&
+          request.resource.data.authorId == resource.data.authorId &&
+          request.resource.data.authorName == resource.data.authorName &&
+          request.resource.data.authorBio == resource.data.authorBio &&
+          request.resource.data.authorAvatar == resource.data.authorAvatar &&
+          request.resource.data.id == resource.data.id &&
+          request.resource.data.createdAt == resource.data.createdAt &&
+          request.resource.data.views == resource.data.views &&
+          request.resource.data.status in ['under_review', 'revision_requested', 'rejected', 'published'] &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'status', 'revisionNotes', 'reviewedAt', 'publishedAt', 'category',
+            'summary', 'coverImage', 'imageAttribution', 'readingTime', 'sources',
+            'tags', 'updatedAt', 'title', 'content', 'slug', 'featured'
+          ])
+        ) ||
+        // 3. Jalur Administrator Utama:
+        //    Admin memiliki wewenang kurasi & moderasi penuh dengan status yang sah
+        (
+          isAdmin() &&
+          request.resource.data.id == resource.data.id &&
+          request.resource.data.createdAt == resource.data.createdAt &&
+          request.resource.data.status in ['draft', 'submitted', 'under_review', 'revision_requested', 'rejected', 'published']
+        ) ||
+        // 4. Jalur Moderasi Status Naskah Redaksi (Kurasi status naskah)
+        (
+          request.resource.data.id == resource.data.id &&
+          request.resource.data.createdAt == resource.data.createdAt &&
+          request.resource.data.authorId == resource.data.authorId &&
+          request.resource.data.status in ['draft', 'submitted', 'under_review', 'revision_requested', 'rejected', 'published'] &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'status', 'revisionNotes', 'reviewedAt', 'publishedAt', 'updatedAt'
+          ])
+        )
+      );
+
+      // Penghapusan naskah artikel:
+      // Penulis hanya boleh menghapus naskah miliknya yang berstatus draft, submitted, atau rejected.
+      // Editor DILARANG menghapus naskah artikel.
+      // Hanya Administrator yang dapat menghapus artikel apa pun termasuk yang telah terbit.
+      allow delete: if (
+        isSignedIn() &&
+        resource.data.authorId == request.auth.uid &&
+        resource.data.status in ['draft', 'submitted', 'rejected']
+      ) || isAdmin();
+    }
+
+    // ==============================================================
+    // 4. KOLEKSI PERMOHONAN KONSULTASI (consultations)
+    // ==============================================================
+    match /consultations/{consultationId} {
+      // Hanya staf berwenang yang dapat melihat data klien
+      allow get, list: if isEditorOrAdmin();
+
+      // Publik dapat mengirim permohonan konsultasi dengan validasi ketat
+      allow create: if request.resource.data.id == consultationId &&
+        request.resource.data.clientName is string && request.resource.data.clientName.size() >= 2 && request.resource.data.clientName.size() <= 100 &&
+        request.resource.data.email is string && request.resource.data.email.size() >= 5 && request.resource.data.email.size() <= 150 &&
+        request.resource.data.whatsapp is string && request.resource.data.whatsapp.size() >= 5 && request.resource.data.whatsapp.size() <= 50 &&
+        request.resource.data.serviceType is string && request.resource.data.serviceType.size() >= 2 && request.resource.data.serviceType.size() <= 100 &&
+        request.resource.data.notes is string && request.resource.data.notes.size() <= 5000 &&
+        request.resource.data.status in ['new', 'contacted', 'completed'] &&
+        request.resource.data.createdAt is string && request.resource.data.createdAt.size() >= 10 && request.resource.data.createdAt.size() <= 40 &&
+        (!('manuscriptTitle' in request.resource.data) || (request.resource.data.manuscriptTitle is string && request.resource.data.manuscriptTitle.size() <= 200)) &&
+        (!('wordCountEstimate' in request.resource.data) || (request.resource.data.wordCountEstimate is string && request.resource.data.wordCountEstimate.size() <= 50)) &&
+        request.resource.data.keys().hasOnly([
+          'id', 'clientName', 'email', 'whatsapp', 'serviceType', 'manuscriptTitle',
+          'wordCountEstimate', 'notes', 'status', 'createdAt'
+        ]);
+
+      // Pembaruan konsultasi: Hanya Admin/Editor untuk mengubah status
+      allow update: if isEditorOrAdmin() &&
+        request.resource.data.id == resource.data.id &&
+        request.resource.data.clientName == resource.data.clientName &&
+        request.resource.data.email == resource.data.email &&
+        request.resource.data.whatsapp == resource.data.whatsapp &&
+        request.resource.data.serviceType == resource.data.serviceType &&
+        request.resource.data.notes == resource.data.notes &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        request.resource.data.status in ['new', 'contacted', 'completed'] &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+
+      allow delete: if isAdmin();
+    }
+
+    // ==============================================================
+    // 5. KOLEKSI LAPORAN KOREKSI / RALAT (corrections)
+    // ==============================================================
+    match /corrections/{correctionId} {
+      // Hanya staf berwenang yang dapat melihat laporan koreksi
+      allow get, list: if isEditorOrAdmin();
+
+      allow create: if request.resource.data.id == correctionId &&
+        request.resource.data.articleId is string && request.resource.data.articleId.size() >= 3 && request.resource.data.articleId.size() <= 100 &&
+        request.resource.data.articleTitle is string && request.resource.data.articleTitle.size() <= 200 &&
+        request.resource.data.reporterName is string && request.resource.data.reporterName.size() >= 2 && request.resource.data.reporterName.size() <= 100 &&
+        request.resource.data.reporterEmail is string && request.resource.data.reporterEmail.size() >= 5 && request.resource.data.reporterEmail.size() <= 150 &&
+        request.resource.data.issueType in ['fakta_keliru', 'hak_cipta', 'kesalahan_bahasa', 'sumber_tidak_valid', 'lainnya'] &&
+        request.resource.data.description is string && request.resource.data.description.size() >= 5 && request.resource.data.description.size() <= 5000 &&
+        request.resource.data.status in ['pending', 'resolved', 'dismissed'] &&
+        request.resource.data.createdAt is string && request.resource.data.createdAt.size() >= 10 && request.resource.data.createdAt.size() <= 40 &&
+        (!('sourceEvidence' in request.resource.data) || (request.resource.data.sourceEvidence is string && request.resource.data.sourceEvidence.size() <= 1000)) &&
+        request.resource.data.keys().hasOnly([
+          'id', 'articleId', 'articleTitle', 'reporterName', 'reporterEmail',
+          'issueType', 'description', 'sourceEvidence', 'status', 'createdAt'
+        ]);
+
+      allow update: if isEditorOrAdmin() &&
+        request.resource.data.id == resource.data.id &&
+        request.resource.data.articleId == resource.data.articleId &&
+        request.resource.data.articleTitle == resource.data.articleTitle &&
+        request.resource.data.reporterName == resource.data.reporterName &&
+        request.resource.data.reporterEmail == resource.data.reporterEmail &&
+        request.resource.data.issueType == resource.data.issueType &&
+        request.resource.data.description == resource.data.description &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        request.resource.data.status in ['pending', 'resolved', 'dismissed'] &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+
+      allow delete: if isAdmin();
+    }
+
+    // ==============================================================
+    // 6. KOLEKSI KOMENTAR (comments)
+    // ==============================================================
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if request.resource.data.id == commentId &&
+                       request.resource.data.articleId is string &&
+                       request.resource.data.content is string &&
+                       request.resource.data.content.size() >= 5;
+      allow update, delete: if isEditorOrAdmin();
+    }
+
+    // ==============================================================
+    // 7. KOLEKSI PROPOSAL BUKU (books)
+    // ==============================================================
+    match /books/{bookId} {
+      allow read: if isEditorOrAdmin() || resource.data.status in ['koleksi_kurasi', 'segera_terbit'];
+      allow create: if request.resource.data.id == bookId;
+      allow update, delete: if isEditorOrAdmin();
+    }
+
+    // ==============================================================
+    // 8. DEFAULT DENY
+    // ==============================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

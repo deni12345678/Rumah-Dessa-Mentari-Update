@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account profile and role information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "User UID matching auth.uid" },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "format": "email", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["reader", "contributor", "editor", "admin"] },
+        "approvalStatus": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "bio": { "type": "string", "maxLength": 500 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "portfolioUrl": { "type": "string", "maxLength": 200 },
+        "avatarUrl": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "email", "role", "approvalStatus"]
+    },
+    "Article": {
+      "title": "Article / Manuscript",
+      "description": "Articles, essays, and book manuscripts submitted by writers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "slug": { "type": "string", "maxLength": 120 },
+        "title": { "type": "string", "maxLength": 200 },
+        "summary": { "type": "string", "maxLength": 500 },
+        "content": { "type": "string", "maxLength": 50000 },
+        "category": { "type": "string", "maxLength": 50 },
+        "tags": { "type": "array" },
+        "authorId": { "type": "string", "maxLength": 64 },
+        "authorName": { "type": "string", "maxLength": 100 },
+        "authorBio": { "type": "string", "maxLength": 300 },
+        "authorAvatar": { "type": "string", "maxLength": 300 },
+        "coverImage": { "type": "string", "maxLength": 300 },
+        "imageAttribution": { "type": "string", "maxLength": 200 },
+        "readingTime": { "type": "string", "maxLength": 30 },
+        "status": { "type": "string", "enum": ["draft", "submitted", "under_review", "revision_requested", "published", "rejected"] },
+        "submittedAt": { "type": "string", "format": "date-time" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "reviewedAt": { "type": "string", "format": "date-time" },
+        "revisionNotes": { "type": "string", "maxLength": 500 },
+        "views": { "type": "number" },
+        "sources": { "type": "array" }
+      },
+      "required": ["id", "title", "content", "authorId", "status"]
+    },
+    "ConsultationRequest": {
+      "title": "Consultation Request",
+      "description": "Book publishing and editing service consultation requests",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "clientName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "format": "email", "maxLength": 150 },
+        "whatsapp": { "type": "string", "maxLength": 30 },
+        "serviceType": { "type": "string", "maxLength": 100 },
+        "manuscriptTitle": { "type": "string", "maxLength": 200 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["new", "contacted", "completed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "clientName", "email", "serviceType"]
+    },
+    "CorrectionReport": {
+      "title": "Correction Report",
+      "description": "Article correction reports and reader feedback",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "articleTitle": { "type": "string", "maxLength": 200 },
+        "reporterEmail": { "type": "string", "format": "email", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["pending", "resolved", "dismissed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "articleTitle", "description"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "User" },
+      "description": "User profiles collection"
+    },
+    "/articles/{articleId}": {
+      "schema": { "$ref": "Article" },
+      "description": "Articles and manuscripts collection"
+    },
+    "/consultations/{consultationId}": {
+      "schema": { "$ref": "ConsultationRequest" },
+      "description": "Consultation requests collection"
+    },
+    "/corrections/{correctionId}": {
+      "schema": { "$ref": "CorrectionReport" },
+      "description": "Correction reports collection"
+    },
+    "/admins/{adminId}": {
+      "schema": { "type": "object", "properties": { "email": { "type": "string" } } },
+      "description": "Authorized admin UIDs collection"
+    }
+  }
+}

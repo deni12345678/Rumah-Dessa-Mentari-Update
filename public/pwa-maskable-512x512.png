@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="sunGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#fef08a"/>
+    </linearGradient>
+    <linearGradient id="bookGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  
+  <!-- Outer Glow -->
+  <circle cx="256" cy="220" r="120" fill="url(#sunGrad)" opacity="0.15" filter="blur(20px)"/>
+
+  <!-- Rising Sun Rays -->
+  <g stroke="url(#sunGrad)" stroke-width="6" stroke-linecap="round" opacity="0.8">
+    <line x1="256" y1="70" x2="256" y2="100" />
+    <line x1="150" y1="114" x2="172" y2="136" />
+    <line x1="362" y1="114" x2="340" y2="136" />
+    <line x1="106" y1="220" x2="136" y2="220" />
+    <line x1="406" y1="220" x2="376" y2="220" />
+  </g>
+
+  <!-- Sun Circle -->
+  <circle cx="256" cy="220" r="85" fill="url(#sunGrad)"/>
+
+  <!-- Open Book Base -->
+  <path d="M 128 320 Q 256 290 256 350 Q 256 290 384 320 L 384 390 Q 256 360 256 420 Q 256 360 128 390 Z" fill="url(#bookGrad)"/>
+  <path d="M 256 350 L 256 420" stroke="#94a3b8" stroke-width="4"/>
+
+  <!-- Stars / Sparkles -->
+  <path d="M 330 160 L 334 170 L 344 174 L 334 178 L 330 188 L 326 178 L 316 174 L 326 170 Z" fill="#fef08a"/>
+  <path d="M 170 180 L 173 187 L 180 190 L 173 193 L 170 200 L 167 193 L 160 190 L 167 187 Z" fill="#fef08a"/>
+</svg>
