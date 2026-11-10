@@ -53,13 +53,8 @@ export default function App() {
 
   // Subscribe to store updates
   useEffect(() => {
-    // One-time legacy dummy data cleanup for production transition
-    const cleanupKey = 'dml_v2_cleanup_done';
-    if (!localStorage.getItem(cleanupKey)) {
-      const keysToClear = ['dml_articles_v1', 'dml_users_v1', 'dml_books_v1', 'dml_settings_v1'];
-      keysToClear.forEach(k => localStorage.removeItem(k));
-      localStorage.setItem(cleanupKey, 'true');
-    }
+    // Ensure store is initialized properly
+    DmlStore.init();
 
     // Initialize initial seed data if not present
     DmlStore.init().then(() => {

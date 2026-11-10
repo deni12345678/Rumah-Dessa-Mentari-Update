@@ -128,6 +128,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, ini
   const [newWriterCategories, setNewWriterCategories] = useState<string[]>(['Kisah Inspiratif']);
   const [createModalMessage, setCreateModalMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Firestore Force Sync & Data Recovery State
+  const [isSyncingFirestore, setIsSyncingFirestore] = useState(false);
+
+  const handleForceFirestoreSync = async () => {
+    setIsSyncingFirestore(true);
+    setBackupNotice('Sedang menghubungkan & memulihkan data artikel dari Cloud Firestore...');
+    
+    const result = await DmlStore.forceSyncWithFirestore();
+    setIsSyncingFirestore(false);
+
+    if (result.success) {
+      setBackupNotice(
+        `✓ Pemulihan Berhasil! ${result.articlesCount} artikel & ${result.usersCount} profil berhasil disinkronkan paksa (${result.source}).`
+      );
+    } else {
+      setBackupNotice(`Gagal melakukan sinkronisasi paksa: ${result.error}`);
+    }
+    setTimeout(() => setBackupNotice(null), 8000);
+  };
+
   const allUsers = DmlStore.getAllUsers();
   const pendingWriters = DmlStore.getPendingWriters();
   const consultations = DmlStore.getConsultations();
@@ -423,6 +443,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, ini
             >
               <UserPlus className="w-4 h-4" />
               <span>+ Buat Akun Penulis</span>
+            </button>
+
+            <button
+              onClick={handleForceFirestoreSync}
+              disabled={isSyncingFirestore}
+              className="px-3.5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+              title="Memaksa sinkronisasi ulang & memulihkan artikel dari Cloud Firestore"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncingFirestore ? 'animate-spin' : ''}`} />
+              <span>{isSyncingFirestore ? 'Memulihkan...' : 'Pulihkan Data Firestore'}</span>
             </button>
 
             <button
@@ -1416,7 +1446,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, ini
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="p-5 rounded-2xl border border-amber-300 bg-amber-50/60 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold">
+                  <RefreshCw className={`w-5 h-5 ${isSyncingFirestore ? 'animate-spin' : ''}`} />
+                </div>
+                <h4 className="font-bold text-sm text-slate-900">Sinkronkan Paksa Firestore</h4>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Menghubungkan langsung ke basis data Cloud Firestore & memulihkan artikel terkurasi resmi jika terjadi ketidaksesuaian sesi atau perangkat.
+                </p>
+                <button
+                  onClick={handleForceFirestoreSync}
+                  disabled={isSyncingFirestore}
+                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-bold text-xs shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isSyncingFirestore ? 'animate-spin' : ''}`} />
+                  <span>{isSyncingFirestore ? 'Sedang Memulihkan...' : 'Pulihkan Data Firestore'}</span>
+                </button>
+              </div>
+
               <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50 space-y-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold">
                   <Download className="w-5 h-5" />

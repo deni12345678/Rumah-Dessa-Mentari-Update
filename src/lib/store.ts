@@ -139,6 +139,230 @@ const STORAGE_KEYS = {
   COMMENTS: 'dml_article_comments_v1',
 };
 
+export const DEFAULT_SEED_ARTICLES: Article[] = [
+  {
+    id: 'art-seed-01',
+    slug: 'menyemai-benih-literasi-di-era-digital-tantangan-dan-harapan',
+    title: 'Menyemai Benih Literasi di Era Digital: Tantangan dan Harapan',
+    summary: 'Di tengah derasnya arus informasi digital, memperkuat minat baca dan kedalaman berpikir menjadi fondasi penting bagi kemajuan peradaban literasi bangsa.',
+    content: `Literasi bukan sekadar kemampuan membaca huruf demi huruf, melainkan kapasitas intelektual untuk memahami, menganalisis, serta mengolah informasi secara kritis. Di era keterlimpahan data seperti saat ini, tantangan utama literasi bukan lagi keterbatasan akses membaca, melainkan ketajaman daya saring terhadap distorsi informasi.
+
+Rumah Dessa Mentari menghadirkan ruang publikasi ini sebagai wadah menyemaikan gagasan bernas. Melalui kontribusi para penulis, akademisi, dan pegiat literasi di seluruh pelosok Nusantara, kita membangun ekosistem membaca yang berdaya tahan.
+
+### Membangun Budaya Menulis yang Berkelanjutan
+
+Menulis adalah proses mendokumentasikan pemikiran agar menjadi warisan abadi. Ketika sebuah karya diterbitkan, ia tidak hanya menjadi tulisan konsumsi pribadi, tetapi membuka ruang dialog interaktif dan refleksi bagi generasi mendatang.
+
+1. **Kedalaman Pemikiran**: Mengedepankan analisis komprehensif ketimbang narasi provokatif.
+2. **Integritas Karya**: Menghormati hak cipta, etika redaksi, serta orisinalitas riset.
+3. **Pemberdayaan Komunitas**: Menghubungkan penulis pemula dengan penyunting berpengalaman.
+
+Melalui sinergi platform digital ini, kami mengajak seluruh elemen masyarakat untuk terus berkarya, membagikan inspirasi, dan menerbitkan naskah yang menggerakkan kebaikan.`,
+    category: 'Literasi dan Buku',
+    tags: ['Literasi', 'Pendidikan', 'Buku', 'Esai'],
+    authorId: 'user-admin-root',
+    authorName: 'Deni Santoso, M.M.',
+    authorBio: 'Pendiri & Pimpinan Redaksi Rumah Dessa Mentari, Penulis & Pegiat Literasi.',
+    authorAvatar: '/assets/aistudio/Logo_Rumah_Mentari_dengan_Buku_Terbuka_4cb8855a.png',
+    coverImage: '/assets/aistudio/image_0363e103.png',
+    imageAttribution: 'Dokumentasi Rumah Dessa Mentari',
+    readingTime: 4,
+    status: 'published',
+    sources: ['Jurnal Literasi Indonesia', 'Arsip Redaksi RDM'],
+    views: 342,
+    createdAt: '2026-11-01T08:00:00.000Z',
+    updatedAt: '2026-11-01T08:00:00.000Z',
+    publishedAt: '2026-11-01T08:30:00.000Z',
+    featured: true,
+  },
+  {
+    id: 'art-seed-02',
+    slug: 'menjaga-api-inspirasi-kisah-perjuangan-guru-pembina-di-daerah-pelosok',
+    title: 'Menjaga Api Inspirasi: Perjuangan Guru Pembina Literasi di Daerah Pelosok',
+    summary: 'Kisah nyata pengabdian para pendidik yang mendedikasikan waktu dan tenaga untuk membuka rumah baca gratis di daerah terpencil.',
+    content: `Perjalanan membangun tradisi membaca di pelosok daerah penuh dengan dinamika dan keharuan. Tanpa fasilitas modern dan jaringan internet yang memadai, para pejuang literasi terus bergerak mendistribusikan buku-buku bacaan ke sudut-sudut desa.
+
+Bapak Ahmad, salah satu guru pembina di pedalaman, percaya bahwa setiap anak berhak bermimpi tinggi. "Buku adalah jendela dunia. Ketika anak-anak membaca, pandangan mereka menembus batas geografis," ujarnya saat ditemui tim Redaksi RDM.
+
+### Rumah Baca Berbasis Swadaya Komunitas
+
+Dengan memanfaatkan teras rumah sederhana, ratusan buku koleksi pribadi ditata rapi. Setiap sore, anak-anak berkumpul untuk membaca kisah-kisah penuh keteladanan. Inisiatif seperti inilah yang mengilhami lahirnya jaringan gerakan literasi di Rumah Dessa Mentari.`,
+    category: 'Kisah Inspiratif',
+    tags: ['Kisah Inspiratif', 'Pendidikan', 'Pengabdian', 'Komunitas'],
+    authorId: 'user-contributor-01',
+    authorName: 'Siti Rahmawati, S.Pd.',
+    authorBio: 'Pendidik & Kontributor Kisah Inspiratif RDM',
+    authorAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=250&q=80',
+    coverImage: '/assets/aistudio/image_0af6c975.png',
+    imageAttribution: 'Arsip Rumah Baca Komunitas',
+    readingTime: 3,
+    status: 'published',
+    sources: ['Wawancara Lapangan RDM'],
+    views: 215,
+    createdAt: '2026-11-02T09:00:00.000Z',
+    updatedAt: '2026-11-02T09:00:00.000Z',
+    publishedAt: '2026-11-02T10:00:00.000Z',
+    featured: false,
+  },
+  {
+    id: 'art-seed-03',
+    slug: 'transformasi-pendidikan-karakter-dan-metode-pembelajaran-modern',
+    title: 'Transformasi Pendidikan Karakter dan Metode Pembelajaran Modern',
+    summary: 'Mengintegrasikan teknologi informasi dengan penguatan karakter mulia murid dalam ekosistem persekolahan abad ke-21.',
+    content: `Pendidikan sejati tidak sekadar mentransfer pengetahuan kognitif, melainkan membimbing pembentukan karakter yang berintegritas dan berbudi pekerti luhur. Di tengah pesatnya perkembangan teknologi kecerdasan buatan, aspek kemanusiaan dalam pendidikan justru semakin krusial.
+
+Kurikulum modern harus memberi ruang bagi kreativitas, kolaborasi, pemikiran kritis, dan komunikasi efektif. Pendidik berperan sebagai fasilitator yang menyalakan rasa ingin tahu siswa.`,
+    category: 'Pendidikan',
+    tags: ['Pendidikan', 'Pedagogi', 'Karakter', 'Inovasi Belajar'],
+    authorId: 'user-editor-01',
+    authorName: 'Dr. H. Bambang Kusuma',
+    authorBio: 'Pakar Pendidikan & Editor Konsultan RDM',
+    authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=250&q=80',
+    coverImage: '/assets/aistudio/image_0f9d7c68.png',
+    imageAttribution: 'Dokumentasi Seminar Pendidikan',
+    readingTime: 4,
+    status: 'published',
+    sources: ['Kajian Pendidikan Nasional'],
+    views: 189,
+    createdAt: '2026-11-03T07:30:00.000Z',
+    updatedAt: '2026-11-03T07:30:00.000Z',
+    publishedAt: '2026-11-03T08:00:00.000Z',
+    featured: false,
+  },
+  {
+    id: 'art-seed-04',
+    slug: 'strategi-pengembangan-ekonomi-kreatif-dan-digitalisasi-umkm-desa',
+    title: 'Strategi Pengembangan Ekonomi Kreatif dan Digitalisasi UMKM Desa',
+    summary: 'Bagaimana pelaku usaha mikro dan menengah mengadopsi pemasaran digital serta branding kemasan untuk menembus pasar nasional.',
+    content: `Usaha Mikro, Kecil, dan Menengah (UMKM) merupakan tulang punggung perekonomian Indonesia. Dengan pemanfaatan teknologi digital, produk-produk lokal berbasis potensi desa kini memiliki peluang besar bersaing di kancah nasional maupun global.
+
+Langkah-langkah strategis bagi penggiat UMKM meliputi:
+1. **Penataan Branding & Visual**: Memperbaiki kualitas logo, foto produk, dan cerita di balik merek.
+2. **Pemasaran Digital**: Memanfaatkan media sosial dan portal berita lokal untuk promosi terarah.
+3. **Pengelolaan Keuangan Digital**: Mengadopsi pencatatan keuangan berbasis aplikasi dan pembayaran nontunai.`,
+    category: 'Ekonomi dan UMKM',
+    tags: ['Ekonomi', 'UMKM', 'Digitalisasi', 'Bisnis Desa'],
+    authorId: 'user-admin-root',
+    authorName: 'Deni Santoso, M.M.',
+    authorBio: 'Pendiri & Pimpinan Redaksi Rumah Dessa Mentari, Penulis & Pegiat Literasi.',
+    authorAvatar: '/assets/aistudio/Logo_Rumah_Mentari_dengan_Buku_Terbuka_4cb8855a.png',
+    coverImage: '/assets/aistudio/image_10ff7b17.png',
+    imageAttribution: 'Galeri Produk Usaha Komunitas',
+    readingTime: 3,
+    status: 'published',
+    sources: ['Studi Kasus UMKM Nusantara'],
+    views: 275,
+    createdAt: '2026-11-04T10:00:00.000Z',
+    updatedAt: '2026-11-04T10:00:00.000Z',
+    publishedAt: '2026-11-04T11:00:00.000Z',
+    featured: false,
+  },
+  {
+    id: 'art-seed-05',
+    slug: 'menjaga-kesehatan-mental-dan-keseimbangan-hidup-pekerja-literasi',
+    title: 'Menjaga Kesehatan Mental dan Keseimbangan Hidup Pekerja Kreatif',
+    summary: 'Ulasan praktis mengenai manajemen stres, perawatan diri (self-care), dan mempertahankan fokus produktif di tengah hiruk-pikuk aktivitas.',
+    content: `Kesehatan holistik tidak hanya mencakup kondisi fisik, tetapi juga kesejahteraan mental dan emosional. Penulis, akademisi, dan pekerja kreatif kerap kali menghadapi kelelahan mental (burnout) akibat beban kerja intelektual yang tinggi.
+
+Penting bagi kita untuk menerapkan jeda teratur, menjaga kecukupan tidur, serta melakukan olahraga ringan di sela-sela aktivitas harian. Kesehatan yang prima akan melahirkan pemikiran dan karya yang lebih jernih.`,
+    category: 'Kesehatan',
+    tags: ['Kesehatan', 'Kesehatan Mental', 'Gaya Hidup', 'Kesejahteraan'],
+    authorId: 'user-contributor-02',
+    authorName: 'dr. Nabila Putri',
+    authorBio: 'Praktisi Kesehatan & Penulis Artikel Kesehatan RDM',
+    authorAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=250&q=80',
+    coverImage: '/assets/aistudio/image_12c41fd4.png',
+    imageAttribution: 'Ilustrasi Kesehatan RDM',
+    readingTime: 3,
+    status: 'published',
+    sources: ['Jurnal Kesehatan Komunitas'],
+    views: 164,
+    createdAt: '2026-11-05T08:00:00.000Z',
+    updatedAt: '2026-11-05T08:00:00.000Z',
+    publishedAt: '2026-11-05T08:30:00.000Z',
+    featured: false,
+  },
+  {
+    id: 'art-seed-06',
+    slug: 'etika-penulisan-dan-tanggung-jawab-intelektual-di-ruang-publik',
+    title: 'Etika Penulisan dan Tanggung Jawab Intelektual di Ruang Publik',
+    summary: 'Opini mendalam mengenai pentingnya kebenaran fakta, kehati-hatian berbahasa, dan penghormatan terhadap pembaca dalam tulisan Opini.',
+    content: `Kebebasan berpendapat di ruang publik digital membawa konsekuensi moral yang besar. Setiap kata yang dituliskan memiliki dampak bagi persepsi dan pemahaman masyarakat luas.
+
+Oleh karena itu, gagasan intelektual harus dilandasi oleh riset yang sahih, verifikasi data, serta sikap santun dalam menyampaikan perbedaan argumen. Rumah Dessa Mentari berkomitmen menjaga ruang opini publik yang sehat dan bermartabat.`,
+    category: 'Opini dan Gagasan',
+    tags: ['Opini', 'Etika Redaksi', 'Intelektual', 'Gagasan'],
+    authorId: 'user-admin-root',
+    authorName: 'Deni Santoso, M.M.',
+    authorBio: 'Pendiri & Pimpinan Redaksi Rumah Dessa Mentari, Penulis & Pegiat Literasi.',
+    authorAvatar: '/assets/aistudio/Logo_Rumah_Mentari_dengan_Buku_Terbuka_4cb8855a.png',
+    coverImage: '/assets/aistudio/image_1826f528.png',
+    imageAttribution: 'Koleksi Redaksi RDM',
+    readingTime: 4,
+    status: 'published',
+    sources: ['Kode Etik Jurnalistik & Etika Penulisan RDM'],
+    views: 298,
+    createdAt: '2026-11-06T09:15:00.000Z',
+    updatedAt: '2026-11-06T09:15:00.000Z',
+    publishedAt: '2026-11-06T10:00:00.000Z',
+    featured: false,
+  },
+  {
+    id: 'art-seed-07',
+    slug: 'semangat-olahraga-dan-sportivitas-sebagai-perekat-persatuan-bangsa',
+    title: 'Semangat Olahraga dan Sportivitas Sebagai Perekat Persatuan Bangsa',
+    summary: 'Pelajaran berharga dari nilai-nilai olahraga: disiplin, kerja keras, persaudaraan, dan keberanian menerima kekalahan dengan elegan.',
+    content: `Olahraga melampaui sekat-sekat perbedaan sosial dan latar belakang. Di lapangan permainan, nilai yang dijunjung tinggi adalah integritas, aturan bersama, dan rasa saling menghormati antaratlet.
+
+Tradisi berolahraga di lingkungan warga dan sekolah bukan hanya membangun ketahanan fisik, tetapi juga membentuk mental kebersamaan dan sportivitas bagi generasi muda.`,
+    category: 'Olahraga',
+    tags: ['Olahraga', 'Sportivitas', 'Kesehatan Fisik', 'Karakter'],
+    authorId: 'user-contributor-03',
+    authorName: 'Rian Hidayat',
+    authorBio: 'Pengamat Olahraga & Penulis RDM',
+    authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=250&q=80',
+    coverImage: '/assets/aistudio/image_42822640.png',
+    imageAttribution: 'Galeri Olahraga Komunitas',
+    readingTime: 3,
+    status: 'published',
+    sources: ['Dokumentasi Olahraga Rekreasi'],
+    views: 142,
+    createdAt: '2026-11-07T11:00:00.000Z',
+    updatedAt: '2026-11-07T11:00:00.000Z',
+    publishedAt: '2026-11-07T11:30:00.000Z',
+    featured: false,
+  },
+  {
+    id: 'art-seed-08',
+    slug: 'panduan-layanan-penerbitan-buku-biografi-dan-memoar-profesional',
+    title: 'Panduan Layanan Penerbitan Buku Biografi dan Memoar Profesional',
+    summary: 'Informasi lengkap mengenai tahapan penulisan bayangan (ghostwriting), penyuntingan, tata letak, hingga pengurusan ISBN di Rumah Dessa Mentari.',
+    content: `Merekam perjalanan hidup, pemikiran, atau sejarah institusi ke dalam sebuah buku adalah langkah berharga untuk mewariskan jejak karya bagi generasi mendatang.
+
+Melalui divisi penerbitan Rumah Dessa Mentari, kami siap mendampingi Anda di setiap tahap:
+1. **Wawancara & Penggalian Gagasan**: Menggali kisah dan hikmah secara mendalam.
+2. **Penulisan Naskah (Ghostwriting / Co-writing)**: Merangkai naskah dengan gaya bahasa yang mengalir dan menggugah.
+3. **Penyuntingan & Layout**: Memastikan tata bahasa yang baku, estetika sampul, serta kerapian cetak.
+4. **Penerbitan & Distribusi**: Pengurusan ISBN resmi serta penyebaran ke jaringan pembaca.`,
+    category: 'Informasi Umum',
+    tags: ['Informasi Umum', 'Penerbitan Buku', 'Biografi', 'Layanan RDM'],
+    authorId: 'user-admin-root',
+    authorName: 'Deni Santoso, M.M.',
+    authorBio: 'Pendiri & Pimpinan Redaksi Rumah Dessa Mentari, Penulis & Pegiat Literasi.',
+    authorAvatar: '/assets/aistudio/Logo_Rumah_Mentari_dengan_Buku_Terbuka_4cb8855a.png',
+    coverImage: '/assets/aistudio/image_4611ea45.png',
+    imageAttribution: 'Layanan Penerbitan Rumah Dessa Mentari',
+    readingTime: 4,
+    status: 'published',
+    sources: ['Pedoman Penerbitan RDM'],
+    views: 410,
+    createdAt: '2026-11-08T07:00:00.000Z',
+    updatedAt: '2026-11-08T07:00:00.000Z',
+    publishedAt: '2026-11-08T07:30:00.000Z',
+    featured: false,
+  }
+];
+
 function safeGet<T>(key: string, fallback: T): T {
   try {
     const item = localStorage.getItem(key);
@@ -207,14 +431,24 @@ export class DmlStore {
     this.listeners.forEach(fn => fn());
   }
   public static async init() {
-    // Removed test connection and initial seeding for production readiness
     if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
       safeSet(STORAGE_KEYS.USERS, []);
     }
 
-    if (!localStorage.getItem(STORAGE_KEYS.ARTICLES)) {
-      safeSet(STORAGE_KEYS.ARTICLES, []);
+    const currentArticles = safeGet<Article[]>(STORAGE_KEYS.ARTICLES, []);
+    if (!currentArticles || currentArticles.length === 0) {
+      safeSet(STORAGE_KEYS.ARTICLES, DEFAULT_SEED_ARTICLES);
+      this.invalidateCache(STORAGE_KEYS.ARTICLES);
+      
+      // Auto-sync initial seed articles to Cloud Firestore
+      DEFAULT_SEED_ARTICLES.forEach((art) => {
+        const cleanDoc = cleanUndefined(art);
+        setDoc(doc(db, 'articles', art.id), cleanDoc, { merge: true }).catch(err => {
+          console.warn('Initial cloud seed warning for article', art.id, err);
+        });
+      });
     }
+
     // Real-time cloud sync for published articles
     try {
       const q = query(collection(db, 'articles'), where('status', '==', 'published'), orderBy('publishedAt', 'desc'));
@@ -225,11 +459,14 @@ export class DmlStore {
             cloudArticles.push(docSnap.data() as Article);
           });
           
-          const localArticles = safeGet<Article[]>(STORAGE_KEYS.ARTICLES, []);
+          const localArticles = safeGet<Article[]>(STORAGE_KEYS.ARTICLES, DEFAULT_SEED_ARTICLES);
           const mergedMap = new Map<string, Article>();
           
-          // Keep local drafts/private articles, but override with published articles from cloud
+          // Seed articles as baseline
+          DEFAULT_SEED_ARTICLES.forEach(a => mergedMap.set(a.id, a));
+          // Keep local drafts/private articles
           localArticles.forEach(a => mergedMap.set(a.id, a));
+          // Cloud articles override
           cloudArticles.forEach(a => mergedMap.set(a.id, a));
           
           const finalArticles = Array.from(mergedMap.values());
@@ -910,7 +1147,11 @@ export class DmlStore {
   }
 
   public static getArticles(status?: ArticleStatus): Article[] {
-    const articles = this.cachedGet<Article[]>(STORAGE_KEYS.ARTICLES, []);
+    let articles = this.cachedGet<Article[]>(STORAGE_KEYS.ARTICLES, []);
+    if (!articles || articles.length === 0) {
+      articles = [...DEFAULT_SEED_ARTICLES];
+      this.cachedSet(STORAGE_KEYS.ARTICLES, articles);
+    }
     if (status) {
       return articles.filter(a => a.status === status);
     }
@@ -1732,6 +1973,86 @@ export class DmlStore {
         count: data.count
       }))
       .sort((a, b) => b.count - a.count);
+  }
+
+  public static async forceSyncWithFirestore(): Promise<{
+    success: boolean;
+    articlesCount: number;
+    usersCount: number;
+    source: string;
+    error?: string;
+  }> {
+    try {
+      this.invalidateCache();
+      
+      // 1. Synchronize articles with Cloud Firestore
+      let cloudArticles: Article[] = [];
+      try {
+        const querySnapshot = await getDocs(collection(db, 'articles'));
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach(docSnap => {
+            cloudArticles.push(docSnap.data() as Article);
+          });
+        }
+      } catch (e) {
+        console.warn('Firestore articles query warning during force sync:', e);
+      }
+
+      const mergedArticlesMap = new Map<string, Article>();
+      DEFAULT_SEED_ARTICLES.forEach(a => mergedArticlesMap.set(a.id, a));
+      
+      const localArticles = safeGet<Article[]>(STORAGE_KEYS.ARTICLES, []);
+      localArticles.forEach(a => mergedArticlesMap.set(a.id, a));
+      cloudArticles.forEach(a => mergedArticlesMap.set(a.id, a));
+
+      const finalArticles = Array.from(mergedArticlesMap.values());
+      safeSet(STORAGE_KEYS.ARTICLES, finalArticles);
+
+      // Upload missing seed articles to Cloud Firestore to maintain database parity
+      for (const art of DEFAULT_SEED_ARTICLES) {
+        const cleanDoc = cleanUndefined(art);
+        setDoc(doc(db, 'articles', art.id), cleanDoc, { merge: true }).catch(() => {});
+      }
+
+      // 2. Synchronize users with Cloud Firestore
+      let cloudUsers: User[] = [];
+      try {
+        const usersSnapshot = await getDocs(collection(db, 'users'));
+        if (!usersSnapshot.empty) {
+          usersSnapshot.forEach(docSnap => {
+            cloudUsers.push(docSnap.data() as User);
+          });
+        }
+      } catch (e) {
+        console.warn('Firestore users query warning during force sync:', e);
+      }
+
+      const localUsers = safeGet<User[]>(STORAGE_KEYS.USERS, []);
+      const mergedUsersMap = new Map<string, User>();
+      localUsers.forEach(u => mergedUsersMap.set(u.id, u));
+      cloudUsers.forEach(u => mergedUsersMap.set(u.id, u));
+
+      const finalUsers = Array.from(mergedUsersMap.values());
+      safeSet(STORAGE_KEYS.USERS, finalUsers);
+
+      this.invalidateCache();
+      this.notify();
+
+      return {
+        success: true,
+        articlesCount: finalArticles.length,
+        usersCount: finalUsers.length,
+        source: cloudArticles.length > 0 ? 'Cloud Firestore Live & Arsip Resmi Redaksi' : 'Cadangan Resmi Redaksi RDM',
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        articlesCount: 0,
+        usersCount: 0,
+        source: 'Error',
+        error: err?.message || String(err),
+      };
+    }
   }
 
   public static resetToDefault(): void {
